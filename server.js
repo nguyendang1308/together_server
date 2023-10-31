@@ -1,7 +1,9 @@
 const express = require("express")
 const app = express()
+const http = require("http").createServer()
 app.use(express.json())
 const PORT = 5000
+http.listen(8080)
 
 //Connect database
 const connectDB = require("./database")
@@ -16,4 +18,5 @@ process.on("unhandledRejection",err => {
 })
 
 app.use("/api/auth",require("./auth/route"))
+
 

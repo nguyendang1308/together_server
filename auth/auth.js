@@ -42,6 +42,7 @@ exports.register = async (req, res, next) => {
 //For login
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
+
   //Check if not have account in database
   try {
     const user = await User.findOne({ email, password: md5(password) });
@@ -55,12 +56,12 @@ exports.login = async (req, res, next) => {
         maxAge: maxAge * 1000,
       });
       res.status(401).json({
-        message: "Invalid username or password",
+        message: "Failed",
         error: "Login not successfull",
       });
     } else {
       res.status(200).json({
-        message: "Login successful",
+        message: "Success",
         user: user._id,
       });
     }
