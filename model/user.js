@@ -1,10 +1,11 @@
 const Mongoose = require("mongoose")
+const crypto = require("crypto");
 
 const UserSchema = new Mongoose.Schema({
-    idUser: {
+    id: {
         type: String,
         unique: true,
-        default: () => new Date().toString(),
+        default: () => new crypto.randomBytes(16).toString("hex"),
     },
     email: {
         type: String,
@@ -27,6 +28,9 @@ const UserSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    friends: [
+        {}
+    ],
     createdDate: {
         type: Date,
         default: () => new Date(),

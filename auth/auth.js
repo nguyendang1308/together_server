@@ -18,17 +18,9 @@ exports.register = async (req, res, next) => {
       gender,
       birthday,
     }).then((user) => {
-      const maxAge = 3 * 60 * 60; //Make sure it exist in 3 hour ?
-      const token = jwt.sign({ id: user._id, email }, jwtSecret, {
-        expiresIn: maxAge,
-      });
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        maxAge: maxAge * 1000,
-      });
       res.status(200).json({
         message: "Register successfully",
-        user: user._id,
+        user: user,
       });
     });
   } catch (err) {
@@ -47,14 +39,6 @@ exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email, password: md5(password) });
     if (!user) {
-      const maxAge = 3 * 60 * 60; //Make sure it exist in 3 hour ?
-      const token = jwt.sign({ id: user._id, email }, jwtSecret, {
-        expiresIn: maxAge,
-      });
-      res.cookie("jwt", token, {
-        httpOnly: true,
-        maxAge: maxAge * 1000,
-      });
       res.status(401).json({
         message: "Failed",
         error: "Login not successfull",
@@ -62,7 +46,7 @@ exports.login = async (req, res, next) => {
     } else {
       res.status(200).json({
         message: "Success",
-        user: user._id,
+        user: user,
       });
     }
   } catch (err) {
