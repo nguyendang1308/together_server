@@ -8,7 +8,9 @@ const connectDB = require("./database");
 connectDB();
 
 //Exception
-const server = app.listen(PORT, () => console.log("Connected on port " + PORT));
+const server = app.listen(PORT, () => {
+    console.log("Connected on port " + PORT);
+});
 
 process.on("unhandledRejection", (err) => {
   console.log("Have error happened: " + err.message);
@@ -16,30 +18,22 @@ process.on("unhandledRejection", (err) => {
 });
 
 app.use("/api/auth", require("./auth/route"));
-
+var client = {};
 //Connect chat server
-const http = require("http").createServer();
-const io = require("socket.io")(http);
-const Conversation = require("./model/conversation")
-var clients = {};
-
-io.on("connection", (socket) => {
-    console.log("User connected ",socket.id);
-    // Listen for incoming chat messages
-    socket.on('signin',(id) => {
-        clients[id] = socket;
-        console.log(clients);
-    });
-    socket.on("message",(data) => {
-        console.log('Received message: ',data);
-        const sourceID = data.sourceID;
-        const destinationID = data.destinationID;
-        const mess = data.message;
-        clients[destinationID].emit("message",mess);
-        Conversation
-    });
+const io = require("socket.io")(3000);
+io.on('connection',socket => {
+  let message = socket.handshake.query.message;
+  console.log('Hello, User ' + message);
+  connectedSockets.add(message);
+  //login
+  socket.on("login",(id) => {
+    client[id] = socket;
+  });
+  socket.on("message",(msg) => {
+    let targetId = msg.targetId;
+    if(client[targetId]) client[targetId].emit("message",msg);
+  });
+  socket.on('disconnect', () => {
+    connectedSockets.delete(message);
+  });
 });
-
-http.listen(3000,(err) => {
-    if(err) console.log(err);
-})

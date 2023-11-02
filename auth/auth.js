@@ -1,58 +1,62 @@
+const Account = require("../model/account");
 const User = require("../model/user");
-var md5 = require("md5");
-
-//JWT token secret
-const jwt = require("jsonwebtoken");
-const jwtSecret =
-  "eaea48d61242c574c2ca331d47de60d1fa87ddfb9c8e832a30c583b02ded0ac1f31d54";
+const crypto = require("crypto");
 
 //Start auth service
-//For authenciation
 exports.register = async (req, res, next) => {
-  const { email, password, fullname, gender, birthday } = req.body;
+  const { username, password, email, fullname, gender, birthday } = req.body;
+  const randomID = new crypto.randomBytes(16).toString("hex");
+
   try {
-    await User.create({
-      email,
-      password: md5(password),
-      fullname,
-      gender,
-      birthday,
-    }).then((user) => {
-      res.status(200).json({
-        message: "Register successfully",
-        user: user,
+    await Account.create({
+      randomID,
+      username,
+      password,
+    }).then(async (account) => {
+      await User.create({
+        idUser: account.idUser,
+        email,
+        fullname,
+        gender,
+        birthday,
+      }).then((user) => {
+        res.status(200).json({
+          message: "Success",
+          data: user,
+        });
       });
     });
   } catch (err) {
     res.status(401).json({
-      message: "User cannot register success",
-      error: err.message,
+      message: "Failed",
+      data: null,
     });
   }
 };
 
 //For login
 exports.login = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   //Check if not have account in database
   try {
-    const user = await User.findOne({ email, password: md5(password) });
+    const account = await Account.findOne({ username: username,password: password }).populate('idUser');
+    const user = await User.findOne({idUser: account.idUser});
     if (!user) {
       res.status(401).json({
         message: "Failed",
-        error: "Login not successfull",
+        error: null,
       });
     } else {
       res.status(200).json({
         message: "Success",
-        user: user,
+        data: user,
       });
     }
   } catch (err) {
     res.status(401).json({
       message: "Have problem occurred",
-      error: err.message,
+      data: null,
     });
   }
 };

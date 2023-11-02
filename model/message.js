@@ -3,9 +3,11 @@ const Mongoose = require("mongoose")
 const MessageSchema = new Mongoose.Schema({
     idSource: {
         type: String,
+        required: true,
     },
     idDestination: {
         type: String,
+        required: true,
     },
     message: {
         type: String,

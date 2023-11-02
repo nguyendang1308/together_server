@@ -1,19 +1,14 @@
 const Mongoose = require("mongoose")
-const crypto = require("crypto");
 
 const UserSchema = new Mongoose.Schema({
-    id: {
-        type: String,
-        unique: true,
-        default: () => new crypto.randomBytes(16).toString("hex"),
-    },
-    email: {
+    idUser: {
         type: String,
         unique: true,
         required: true,
     },
-    password: {
+    email: {
         type: String,
+        unique: true,
         required: true,
     },
     fullname: {
@@ -28,13 +23,22 @@ const UserSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
-    friends: [
-        {}
+    conversation: [
+        {
+            type: Mongoose.Schema.Types.ObjectId,
+            ref: "conversation",
+        }
     ],
-    createdDate: {
-        type: Date,
-        default: () => new Date(),
-    }
+    security: {
+        type: Mongoose.Schema.Types.ObjectId,
+        ref: "security",
+    },
+    blockUser: [
+        {
+            type: Mongoose.Schema.Types.ObjectId,
+            ref: "blockUser",
+        }
+    ],
 })
 
 const User = Mongoose.model("user",UserSchema);
