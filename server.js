@@ -25,23 +25,17 @@ var client = {};
 //Connect chat server
 const io = require("socket.io")(3000);
 io.on('connection',socket => {
-  let message = socket.handshake.query.message;
-  console.log('Hello, User ' + message);
-  connectedSockets.add(message);
   //login
   socket.on("login",(id) => {
     client[id] = socket;
+    message = id;
+    console.log('Hello, User ' + message);
   });
-  socket.on("message",(msg) => {
+  socket.on("message",async (msg) => {
+    console.log("Message: " + msg.message);
     let targetId = msg.targetId;
-    if(client[targetId]) {
-      //Check if conservation not exist
-
-      const sourceConservation = 
-      client[targetId].emit("message",msg)
-    };
+    if(client[targetId]) client[targetId].emit("message",msg);
   });
   socket.on('disconnect', () => {
-    connectedSockets.delete(message);
   });
 });

@@ -33,10 +33,15 @@ exports.addfriend = async (req, res, next) => {
     //Check if exist in list friend
     const userSource = await User.findOne({idUser: idUserSource})
     const userDest = await User.findOne({idUser: idUserDes});
-    const isExist = await User.findOne({idUser: idUserSource,friends: {
-        $in: userDest
-    }})
-    if(!userDest){
+    var isExist = false
+    await User.findOne({idUser: idUserSource}).populate("friends").then(user => {
+        user.friends.forEach((value) => {
+            if(userDest.idUser == value.idUser){
+                isExist = true;
+            }
+        })
+    });
+    if(isExist == false){
         //Update source ID
         await User.updateOne({idUser: idUserSource},{$push: {friends: userDest}});
         //Update destination ID
@@ -49,4 +54,17 @@ exports.addfriend = async (req, res, next) => {
             message: "Failed",
         });
     }
+}
+
+//Get list friend
+exports.friends = async (req, res, next) => {
+    const {idUser} = req.body;
+    console.log(idUser);
+    //get list friend
+    await User.findOne({idUser: idUser}).then((data) => {
+        res.status(200).json({
+            message: "Success",
+            data: data.friends
+        });
+    });
 }

@@ -12,14 +12,14 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginState.initial()) {
     on<LoginEvent>((event, emit) async {
-      User? user = await loginAPI(event.email, event.password);
-      if (user != null) {
+      User user = await loginAPI(event.email, event.password);
+      if (user.fullName != "") {
         emit(state.copyWith(user: user));
       }
     });
   }
 
-  Future<User?> loginAPI(String username, String password) async {
+  Future<User> loginAPI(String username, String password) async {
     try {
       final url = Uri.parse(apiHost + login);
       final response = await http.post(
@@ -33,9 +33,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (response.statusCode == 200) {
         return User.fromMap(jsonDecode(response.body)["data"]);
       }
-      return null;
+      return User(birthday: '', email: '', fullName: '', gender: '', id: '');
     } catch (er) {
-      print("Error $er");
+      return User(birthday: '', email: '', fullName: '', gender: '', id: '');
     }
   }
 }

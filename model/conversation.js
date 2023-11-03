@@ -2,10 +2,6 @@ const Mongoose = require("mongoose")
 const message = require("./message")
 
 const ConversationSchema = new Mongoose.Schema({
-    idRoom: {
-        type: String,
-        required: true,
-    },
     idSource: {
         type: String,
         required: true,

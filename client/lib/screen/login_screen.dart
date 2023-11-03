@@ -46,7 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => BlocProvider(
                           create: (context) => LoginBloc(),
-                          child: const TestPage(),
+                          child: TestPage(
+                            user: state.user,
+                          ),
                         )));
               }
             },
