@@ -62,10 +62,11 @@ io.on("connection", (socket) => {
               idDestination: msg.targetId,
               message: msg.message,
             },
-          }
+          },
         }
       );
     } else {
+      //Create conversation
       const id = new Mongoose.Types.ObjectId();
       const messager = new Message({
         _id: id,
@@ -83,8 +84,8 @@ io.on("connection", (socket) => {
             idSource: message,
             idDestination: msg.targetId,
             message: msg.message,
-          }
-        ]
+          },
+        ],
       });
       conversation.save();
     }
