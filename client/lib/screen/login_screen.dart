@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:client/bloc/login_bloc.dart';
+import 'package:client/constants/api.dart';
+import 'package:client/model/friend.dart';
+import 'package:client/model/users.dart';
 import 'package:client/screen/test_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,13 +47,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(height: 12),
           BlocConsumer<LoginBloc, LoginState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state.user != null) {
+                Friend friends = await getFriends(state.user.id);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => BlocProvider(
                           create: (context) => LoginBloc(),
                           child: TestPage(
                             user: state.user,
+                            friend: friends.friends,
                           ),
                         )));
               }
@@ -66,5 +74,24 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  Future<Friend> getFriends(String userId) async {
+    try {
+      final url = Uri.parse(apiHost + friends);
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(<String, dynamic>{
+          "idUser": userId,
+        }),
+      );
+      if (response.statusCode == 200) {
+        return Friend.fromMap(jsonDecode(response.body)["data"]);
+      }
+      return Friend(friends: []);
+    } catch (er) {
+      return Friend(friends: []);
+    }
   }
 }

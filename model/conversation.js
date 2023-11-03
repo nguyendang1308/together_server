@@ -10,6 +10,12 @@ const ConversationSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    message: [
+        {
+            type: Mongoose.Schema.Types.ObjectId,
+            ref: "message"
+        }
+    ],
     createDate: {
         type: Date,
         default: () => new Date(),

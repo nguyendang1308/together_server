@@ -1,13 +1,12 @@
-import 'package:client/bloc/login_bloc.dart';
 import 'package:client/model/message.dart';
 import 'package:client/model/users.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class TestPage extends StatefulWidget {
-  const TestPage({super.key, required this.user});
+  const TestPage({super.key, required this.user, required this.friend});
   final User user;
+  final List<User> friend;
   @override
   State<TestPage> createState() => _TestPageState();
 }

@@ -59,9 +59,8 @@ exports.addfriend = async (req, res, next) => {
 //Get list friend
 exports.friends = async (req, res, next) => {
     const {idUser} = req.body;
-    console.log(idUser);
     //get list friend
-    await User.findOne({idUser: idUser}).then((data) => {
+    await User.findOne({idUser: idUser}).populate('friends').then((data) => {
         res.status(200).json({
             message: "Success",
             data: data.friends
