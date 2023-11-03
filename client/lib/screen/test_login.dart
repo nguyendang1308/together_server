@@ -19,7 +19,6 @@ class _TestPageState extends State<TestPage> {
   //Function server controll
   Future<void> serverControll() async {
     final user = context.read<LoginBloc>().state.user;
-    print("user: ${user?.id ?? ""}");
     //Connect to server chat
     socket.connect();
     //First emit

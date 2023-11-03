@@ -3,6 +3,9 @@ const app = express();
 app.use(express.json());
 const PORT = 5000;
 
+//Constant model
+const User = require("../Backend/model/user");
+
 //Connect database
 const connectDB = require("./database");
 connectDB();
@@ -31,7 +34,12 @@ io.on('connection',socket => {
   });
   socket.on("message",(msg) => {
     let targetId = msg.targetId;
-    if(client[targetId]) client[targetId].emit("message",msg);
+    if(client[targetId]) {
+      //Check if conservation not exist
+
+      const sourceConservation = 
+      client[targetId].emit("message",msg)
+    };
   });
   socket.on('disconnect', () => {
     connectedSockets.delete(message);

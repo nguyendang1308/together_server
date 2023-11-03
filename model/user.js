@@ -23,6 +23,12 @@ const UserSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    friends: [
+        {
+            type: Mongoose.Schema.Types.ObjectId,
+            ref: "user",
+        }
+    ],
     conversation: [
         {
             type: Mongoose.Schema.Types.ObjectId,
